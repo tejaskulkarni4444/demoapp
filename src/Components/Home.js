@@ -26,7 +26,7 @@ const styles = theme => ({
     headerContainer:{
         background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260) no-repeat',
         backgroundSize: '100%',
-        height: '35%',
+        height: '275px',
         backgroundPosition:'center'
     },
     headerBody:{
