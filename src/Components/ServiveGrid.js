@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
 import { Link } from 'react-router-dom'
-import Service from './Service'
 import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -51,7 +50,7 @@ class ServiceGrid extends Component {
         return (<Grid container spacing={0} className={classes.container}>
                     {serviceList.data.map(service => <Grid key={service.id} item xs={4} md={2}>
                             <Link to={`/services/${service.id}`} className={classes.serviceLink}>
-                            <img src={service.avatar} className={classes.serviceLogo}/>
+                            <img src={service.avatar} className={classes.serviceLogo} alt="logo"/>
                             {service.name}
                             </Link>
                         </Grid>) }

@@ -27,7 +27,7 @@ class Service extends Component {
         const { serviecDetails } = this.state
         return (
             <div>
-                <img src={serviecDetails.avatar}/>
+                <img src={serviecDetails.avatar} alt='zz'/>
                 <p>{serviecDetails.name}</p>
                <p>{serviecDetails.description}</p>
             </div>

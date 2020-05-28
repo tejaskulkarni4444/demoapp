@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles'
 import ServiceGrid from './ServiveGrid'
-import TextField from '@material-ui/core/TextField'
-import shadows from '@material-ui/core/styles/shadows';
 
 const styles = theme => ({
     container: {
