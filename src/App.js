@@ -5,6 +5,7 @@ import Home from './Components/Home'
 import About from './About'
 import Navbar from './Components/Navbar'
 import Services from './Components/Services'
+import Service from './Components/Service'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
 
 function App() {
@@ -12,14 +13,12 @@ function App() {
     <Router>
       <div className="App">
         <Navbar/>
-        <header className="App-header">
           <Switch>
             <Home path='/' exact Component={Home} name='We build and Fix'/>
             <About path='/about' Component={About}></About>
             <Services path='/services' exact Component={Services}></Services>
-            <Services path='/services/:name' Component={Services}></Services>
+            <Service path='/services/:id' Component={Service}></Service>
           </Switch>
-        </header>
       </div>
     </Router>
   );

@@ -15,7 +15,7 @@ const styles = theme => ({
       flexGrow: 1,
     },
     navContainer:{
-      position: 'fixed',
+      position: 'unset',
       top: '0',
       backgroundColor: '#00adff'
     },
@@ -31,6 +31,7 @@ const styles = theme => ({
     },
     search: {
       position: 'relative',
+      margin: 'auto',
       borderRadius: theme.shape.borderRadius,
       backgroundColor: fade(theme.palette.common.white, 0.15),
       '&:hover': {
@@ -73,15 +74,15 @@ const styles = theme => ({
       display: 'inline-block',
       margin: '0 10px',
       color: 'White',
-      fontWeight: '600'
-    }
+      fontWeight: '600',
+      '@media (max-width: 480px)': { display: 'none' },
+    },
   });
 
 class Navbar extends Component {
   render() {
     const { classes } = this.props
-    return (
-            <AppBar className={classes.navContainer}>
+    return (<AppBar className={classes.navContainer}>
               <Toolbar>
               <IconButton
                 edge="start"
