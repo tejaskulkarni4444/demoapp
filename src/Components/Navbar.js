@@ -30,6 +30,9 @@ const styles = theme => ({
       },
     },
     search: {
+      [theme.breakpoints.up('md')]:{
+        display: 'none !important'
+      },
       position: 'relative',
       margin: 'auto',
       borderRadius: theme.shape.borderRadius,
@@ -77,6 +80,17 @@ const styles = theme => ({
       fontWeight: '600',
       '@media (max-width: 480px)': { display: 'none' },
     },
+    searchInputContainer:{
+      width: '40%'
+    },
+    searchInput: {
+      margin: '20px 0',
+      background: 'White',
+      padding: '12px',
+      borderRadius: '10px',
+      border: 'White',
+      outline: '0'
+    }
   });
 
 class Navbar extends Component {
@@ -91,7 +105,6 @@ class Navbar extends Component {
                 aria-label="open drawer"
               >{/* TODO Add a logo */}
                 <Link to='/'>
-                  {/* <Typography className={classes.title} variant="h6" noWrap>Build me</Typography> */}
                   <HammerIcon fontSize='large' aria-label="hah"/>
                 </Link>
               </IconButton>
@@ -100,17 +113,18 @@ class Navbar extends Component {
                   <SearchIcon />
                 </div>
                 <InputBase
-                placeholder="Search…"
-                classes={{
+                  placeholder="What are you looking for?"
+                  classes={{
                     root: classes.inputRoot,
                     input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
                 />
               </div>
-              <ul className={classes.navbar}>
+              <ul className={classes.navbar} position="start">
                 <Link to='/about' className={classes.navLinks}><li>What we do?</li></Link>
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
+                <Link to='/' className={classes.navLinks}><li>Login</li></Link>
               </ul>
               </Toolbar>
           </AppBar>

@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const styles = theme => ({
     container:{
@@ -19,7 +20,11 @@ const styles = theme => ({
         fontSize: '14px',
         color: 'Black',
         fontWeight: '600',
+        margin: '5px auto'
     },
+    serviceName: {
+
+    }
 })
 class ServiceGrid extends Component {
     componentDidMount(){
@@ -46,12 +51,14 @@ class ServiceGrid extends Component {
     render() {
         const { serviceList } = this.state
         const { classes } = this.props
-        console.log(serviceList.data.map(s=>s))
-        return (<Grid container spacing={0} className={classes.container}>
+        return (<Grid container spacing={0} alignItems="flex-end" justify="center" className={classes.container}>
+                    {serviceList.data.length === 0 && <div className={classes.root}>
+                        <CircularProgress />
+                    </div>}
                     {serviceList.data.map(service => <Grid key={service.id} item xs={4} md={2}>
                             <Link to={`/services/${service.id}`} className={classes.serviceLink}>
-                            <img src={service.avatar} className={classes.serviceLogo} alt="logo"/>
-                            {service.name}
+                                <img src={service.avatar} className={classes.serviceLogo} alt="logo"/>
+                                <label className={classes.serviceName}>{service.name}</label>
                             </Link>
                         </Grid>) }
                 </Grid>)

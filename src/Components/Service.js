@@ -1,12 +1,16 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react'
+import axios from 'axios'
+import { withStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
+const styles = theme => ({
+    container: { padding: '20px'}
+})
 class Service extends Component {
     state = {
         serviecDetails: {}
     }
     componentDidMount(){
-        console.log('gi')
         const serviceName = document.location.href.split('/')
         this.getData(serviceName[serviceName.length-1])
     }
@@ -25,14 +29,19 @@ class Service extends Component {
 
     render() {
         const { serviecDetails } = this.state
+        const { classes } = this.props
+        console.log(Object.keys(serviecDetails).length)
         return (
-            <div>
-                <img src={serviecDetails.avatar} alt='zz'/>
-                <p>{serviecDetails.name}</p>
-               <p>{serviecDetails.description}</p>
+            <div className={classes.container}>
+                {Object.keys(serviecDetails).length === 0 && <CircularProgress/>}
+                {Object.keys(serviecDetails).length !== 0 && <div>
+                    <img src={serviecDetails.avatar} alt='zz'/>
+                    <p>{serviecDetails.name}</p>
+                    <p>{serviecDetails.description}</p>
+                </div>}
             </div>
         );
     }
 }
 
-export default Service
+export default withStyles(styles)(Service)

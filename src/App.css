@@ -3,6 +3,8 @@ html, body,.App, #root{
 }
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 a{ text-decoration: none }
 .App-logo {

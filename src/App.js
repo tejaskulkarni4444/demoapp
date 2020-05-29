@@ -7,6 +7,7 @@ import Navbar from './Components/Navbar'
 import Services from './Components/Services'
 import Service from './Components/Service'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
+import Footer from './Components/Footer'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Services path='/services' exact Component={Services}></Services>
             <Service path='/services/:id' Component={Service}></Service>
           </Switch>
+          <Footer/>
       </div>
     </Router>
   );
