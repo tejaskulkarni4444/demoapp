@@ -7,16 +7,12 @@ import { Button } from '@material-ui/core'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
 const styles = theme => ({
-    container: {
-        width: '100%',
-        // height: '100%',
-    },
+    container: { width: '100%'},
     searchInputContainer:{
-        width: '40%'
+        width: '40%',
+        '@media (max-width: 480px)':{ width: '100%' }
     },
-    searchIcon: {
-        position: 'absolute'
-    },
+    searchIcon: { position: 'absolute' },
     searchInput: {
         margin: '20px 0',
         background: 'White',
@@ -34,16 +30,16 @@ const styles = theme => ({
         background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260) no-repeat',
         backgroundSize: '100%',
         height: '275px',
+        padding: '20px',
         backgroundPosition:'center',
         '@media (max-width: 480px)':{
             backgroundSize: '100% 100%'
         }
     },
-    headerBody:{
-        transform: 'translateY(100px)'
-    },
+    headerBody:{ transform: 'translateY(100px)' },
     searchBtn:{
         background: 'White',
+        '@media (max-width: 480px)':{ width: '100%' }
     }
 })
 

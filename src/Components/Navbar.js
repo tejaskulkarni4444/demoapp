@@ -2,25 +2,37 @@ import React, { Component } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
-// import Typography from '@material-ui/core/Typography'
-import InputBase from '@material-ui/core/InputBase'
 import { fade } from '@material-ui/core/styles'
 import { withStyles } from '@material-ui/core/styles'
-import SearchIcon from '@material-ui/icons/Search'
 import { Link } from 'react-router-dom'
 import HammerIcon from '@material-ui/icons/Gavel'
+import MenuIcon from '@material-ui/icons/Menu'
+import Drawer from '@material-ui/core/Drawer'
+import List from '@material-ui/core/List'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import classNames from 'classnames'
 
 const styles = theme => ({
     root: {
       flexGrow: 1,
     },
     navContainer:{
-      position: 'unset',
+      position: 'relative',
       top: '0',
-      backgroundColor: '#00adff'
+      backgroundColor: 'Black'
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
+    logoBtn: {
+      
+    },
+    logo:{ color:'White'},
+    logoText:{ 
+      color:'White',
+      display: 'inline-block',
+      verticalAlign: 'top'
     },
     title: {
       flexGrow: 1,
@@ -72,7 +84,10 @@ const styles = theme => ({
         },
       },
     },
-    navbar:{ listStyle: 'none' },
+    navLinkContainer:{ 
+      listStyle: 'none',
+      marginLeft: 'auto'
+    },
     navLinks:{ 
       display: 'inline-block',
       margin: '0 10px',
@@ -90,25 +105,60 @@ const styles = theme => ({
       borderRadius: '10px',
       border: 'White',
       outline: '0'
-    }
+    },
+    sliderMenu:{ 
+      marginLeft: 'auto',
+      display: 'none',
+      '@media (max-width:480px)':{
+        display: 'inline-block'
+      }
+    },
+    drawerPaper:{ 
+      backgroundColor: 'Black',
+      width: '50%'
+    },
+    drawerItems:{ color: '#fff'}
   });
 
 class Navbar extends Component {
+  state = {
+    isHomePage: false,
+    drawerOpen: false,
+    isDrawerClicked: false
+  }
+  handleDrawerOpen = () => {
+    this.setState({drawerOpen: true, isDrawerClicked: true})
+  }
+
+  handleDrawerClose = () => {
+    console.log('ha')
+    this.setState({drawerOpen: false, isDrawerClicked: false})
+  }
+  handleClickAway = (event) => {
+    // const { drawerOpen, isDrawerClicked } = this.state
+    // console.log(isDrawerClicked)
+    // if(drawerOpen && isDrawerClicked){ 
+    //   this.setState({drawerOpen: false, isDrawerClicked: false})
+    // }
+  }
+
   render() {
     const { classes } = this.props
+    const { drawerOpen } = this.state  
     return (<AppBar className={classes.navContainer}>
               <Toolbar>
               <IconButton
                 edge="start"
-                className={classes.menuButton}
+                className={classes.logoBtn}
                 color="inherit"
                 aria-label="open drawer"
               >{/* TODO Add a logo */}
                 <Link to='/'>
-                  <HammerIcon fontSize='large' aria-label="hah"/>
+                  <HammerIcon className={classes.logo}/>
+                  <Typography className={classes.logoText}>&nbsp;Build</Typography>
                 </Link>
               </IconButton>
-              <div className={classes.search}>
+              {/* <div className={classes.search}>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
                 </div>
@@ -120,14 +170,58 @@ class Navbar extends Component {
                   }}
                   inputProps={{ 'aria-label': 'search' }}
                 />
-              </div>
-              <ul className={classes.navbar} position="start">
+              </div> */}
+              <ul className={classes.navLinkContainer} position="start">
                 <Link to='/about' className={classes.navLinks}><li>What we do?</li></Link>
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
                 <Link to='/' className={classes.navLinks}><li>Login</li></Link>
               </ul>
+              {/* <IconButton 
+                edge="start" 
+                className={classNames(classes.sliderMenu, classes.sliderBtn)} 
+                onClick={this.handleDrawerOpen}
+                color="inherit" 
+                aria-label="menu"
+              >
+                <MenuIcon className={classes.sliderBtn} />
+              </IconButton> */}
+              <MenuIcon 
+                edge="start" 
+                id='sliderBtn'
+                className={classNames(classes.sliderMenu, classes.sliderBtn)} 
+                onClick={this.handleDrawerOpen}
+                color="inherit" 
+                aria-label="menu"
+              />
               </Toolbar>
-          </AppBar>
+                <Drawer
+                  variant="persistent"
+                  anchor="right"
+                  open={drawerOpen}
+                  // onRequestChange={this.handleDrawerClose}
+                  ModalProps={{ onBackdropClick: this.handleDrawerClose }}
+                  className={classes.drawerContainer}
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                >
+                  <div className={classes.drawerHeader}>
+                    <IconButton onClick={this.handleDrawerClose} style={{color: '#fff', display: 'block'}}>
+                      <ChevronRightIcon/>
+                    </IconButton>
+                  </div>
+                  <Divider />
+                  <List>
+                    {['Login/Sign up','What we do?','Services'].map((text, index) => (
+                      <Link to={`/${text}`} key={index}>
+                        <ListItem button key={text} className={classes.drawerItems}>
+                          <ListItemText primary={text} />
+                        </ListItem>
+                      </Link>
+                    ))}
+                  </List>
+                </Drawer>
+            </AppBar>
     );
   }
 }

@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { Button, Grid } from '@material-ui/core'
 
 const styles = theme => ({
-    container: { padding: '20px'}
+    container: { padding: '20px'},
+    nextBtn:{ background: 'Grey'}
 })
 class Service extends Component {
     state = {
@@ -17,12 +19,11 @@ class Service extends Component {
     getData = (serviceName) => {
         axios.get(`https://5ecd617f7c528e00167cd462.mockapi.io/services/${serviceName}`)
       .then(res => {
-        console.log(res)
         if(res){
             this.setState(state => { 
                 state.serviecDetails = res.data
                 return state
-            },()=> console.log(this.state.serviecDetails))
+            })
         }
       })
     }
@@ -30,15 +31,21 @@ class Service extends Component {
     render() {
         const { serviecDetails } = this.state
         const { classes } = this.props
-        console.log(Object.keys(serviecDetails).length)
         return (
             <div className={classes.container}>
                 {Object.keys(serviecDetails).length === 0 && <CircularProgress/>}
-                {Object.keys(serviecDetails).length !== 0 && <div>
-                    <img src={serviecDetails.avatar} alt='zz'/>
-                    <p>{serviecDetails.name}</p>
-                    <p>{serviecDetails.description}</p>
-                </div>}
+                {Object.keys(serviecDetails).length !== 0 && 
+                    <Grid container>
+                        <Grid item xs={12} md={3}>
+                            <img src={serviecDetails.avatar} alt='zz'/>
+                            <p>{serviecDetails.description}</p>
+                        </Grid>
+                        <Grid item xs={12} md={9}>
+                            <h1>{serviecDetails.name}</h1>
+                            <Button className={classes.nextBtn}>Book</Button>
+                        </Grid>
+                    </Grid>
+                }
             </div>
         );
     }
