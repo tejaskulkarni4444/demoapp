@@ -5,6 +5,7 @@ import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
 import { Button } from '@material-ui/core'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import Steps from './Steps'
 
 const styles = theme => ({
     container: { width: '100%'},
@@ -69,6 +70,7 @@ class Home extends Component {
                     </div>
                 </div>
                 <ServiceGrid />
+                <Steps />
             </div>);
     }
 }

@@ -1,52 +1,39 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import Modal from '@material-ui/core/Modal'
 import { withStyles } from '@material-ui/core/styles'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { Button, Grid } from '@material-ui/core'
 
 const styles = theme => ({
-    container: { padding: '20px'},
-    nextBtn:{ background: 'Grey'}
+    paper: { 
+        backgroundColor: '#fff',
+        padding: '20px',
+        maxWidth: '500px',
+        position: 'absolute',
+        top: '50%',
+        left: '50%'
+}
 })
-class Service extends Component {
-    state = {
-        serviecDetails: {}
-    }
-    componentDidMount(){
-        const serviceName = document.location.href.split('/')
-        this.getData(serviceName[serviceName.length-1])
-    }
-    getData = (serviceName) => {
-        axios.get(`https://5ecd617f7c528e00167cd462.mockapi.io/services/${serviceName}`)
-      .then(res => {
-        if(res){
-            this.setState(state => { 
-                state.serviecDetails = res.data
-                return state
-            })
-        }
-      })
-    }
 
+class Service extends Component {
+    renderBody = () => {
+        return( <div>this is body</div>)
+    }
+    handleClose = () => {
+
+    }
     render() {
-        const { serviecDetails } = this.state
-        const { classes } = this.props
-        return (
-            <div className={classes.container}>
-                {Object.keys(serviecDetails).length === 0 && <CircularProgress/>}
-                {Object.keys(serviecDetails).length !== 0 && 
-                    <Grid container>
-                        <Grid item xs={12} md={3}>
-                            <img src={serviecDetails.avatar} alt='zz'/>
-                            <p>{serviecDetails.description}</p>
-                        </Grid>
-                        <Grid item xs={12} md={9}>
-                            <h1>{serviecDetails.name}</h1>
-                            <Button className={classes.nextBtn}>Book</Button>
-                        </Grid>
-                    </Grid>
-                }
-            </div>
+        const { classes, info } = this.props
+        return (<Modal
+                open={info.isModalOpen}
+                onClose={this.handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div className={classes.paper}>
+                    <span>this is body</span>
+                    {/* <Button onClick={this.handleClose}>Close</Button> */}
+                </div>
+            {/* {this.renderBody} */}
+          </Modal>
         );
     }
 }
