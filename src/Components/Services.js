@@ -3,7 +3,7 @@ import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Grid } from '@material-ui/core'
-// import Service from './Service'
+import Service from './Service'
 
 const styles = theme => ({
     pageTitle:{ margin:'10px 0'},
@@ -31,14 +31,14 @@ const styles = theme => ({
 class Services extends Component {
     state = {
         serviecDetails: {},
-        isModalOpen: false
+        isModalOpen: false,
+        jobInfo: {}
     }
     componentDidMount(){
         const splitUrl = document.location.href.split('/')
         this.getData(splitUrl[splitUrl.length-1])
     }
     getData = (id) => {
-        console.log(id)
         axios.get(`https://5ecd617f7c528e00167cd462.mockapi.io/joblist/${id}`)
       .then(res => {
         if(res){
@@ -49,10 +49,15 @@ class Services extends Component {
         }
       })
     }
-    toggleModal = () => {
-        this.setState({isModalOpen: !this.state.isModalOpen},()=>console.log(this.state.isModalOpen))
+    handleModalOpen = (jobInfo) => {
+        this.setState({
+            isModalOpen: true,
+            jobInfo: jobInfo
+        })
     }
-
+    handleClose = () => {
+        this.setState({isModalOpen: false})
+    }
     render() {
         const { serviecDetails, isModalOpen } = this.state
         const { classes } = this.props
@@ -69,7 +74,7 @@ class Services extends Component {
                             <h1 className={classes.pageTitle}>{serviecDetails.name}</h1>
                             <Grid container>
                                 {serviecDetails.jobs.map((job, index) => 
-                                { return <div key={index} className={classes.job} onClick={this.toggleModal}>
+                                { return <div key={index} className={classes.job} onClick={() => this.handleModalOpen(job)}>
                                         <Grid container>
                                             <Grid item xs={12} className={classes.imageContainer}>
                                                 <img src={job.image} className={classes.jobImage} alt="Job pic"/>
@@ -87,7 +92,16 @@ class Services extends Component {
                         </Grid>
                     </Grid>
                 }
-                {/* { isModalOpen && <Service info={this.state} /> } */}
+                {isModalOpen && <Service info={this.state} closeModal={this.handleClose} />}
+               {/* {isModalOpen && <Modal
+                    open={isModalOpen}
+                    onClose={this.handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    <div> <Service info={this.state} /> </div>
+                   
+               </Modal>} */}
             </div>
         );
     }

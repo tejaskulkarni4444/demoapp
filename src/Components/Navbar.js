@@ -131,15 +131,7 @@ class Navbar extends Component {
   }
 
   handleDrawerClose = () => {
-    console.log('ha')
     this.setState({drawerOpen: false, isDrawerClicked: false})
-  }
-  handleClickAway = (event) => {
-    // const { drawerOpen, isDrawerClicked } = this.state
-    // console.log(isDrawerClicked)
-    // if(drawerOpen && isDrawerClicked){ 
-    //   this.setState({drawerOpen: false, isDrawerClicked: false})
-    // }
   }
 
   render() {
