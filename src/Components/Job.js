@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import Modal from '@material-ui/core/Modal'
-import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
     paper: { 
@@ -41,10 +41,11 @@ const styles = theme => ({
     infoSection: {padding: '0 20px'}
 })
 
-class Service extends Component {
+class Job extends Component {
     
     componentWillMount(){
         const { info } = this.props
+        console.log(info)
         this.setState({ open: info.isModalOpen})
     }
     
@@ -95,4 +96,4 @@ class Service extends Component {
     }
 }
 
-export default withStyles(styles)(Service)
+export default withStyles(styles)(Job)

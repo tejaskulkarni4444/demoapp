@@ -4,7 +4,8 @@ import './App.css';
 import Home from './Components/Home'
 import About from './About'
 import Navbar from './Components/Navbar'
-import Services from './Components/Services'
+import Jobs from './Components/Jobs'
+import Job from './Components/Job'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import Footer from './Components/Footer'
 
@@ -16,8 +17,8 @@ function App() {
           <Switch>
             <Home path='/' exact Component={Home} name='We build and Fix'/>
             <About path='/about' Component={About}></About>
-            <Services path='/services/:id' exact Component={Services}></Services>
-            {/* <Service path='/service/:id' exact Component={Service}></Service> */}
+            <Jobs path='/jobs/:id' exact Component={Jobs}></Jobs>
+            <Job path='/job/:id' exact Component={Job}></Job>
           </Switch>
           <Footer/>
       </div>

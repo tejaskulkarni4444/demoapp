@@ -3,7 +3,7 @@ import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Grid } from '@material-ui/core'
-import Service from './Service'
+import Job from './Job'
 
 const styles = theme => ({
     pageTitle:{ margin:'10px 0'},
@@ -15,6 +15,9 @@ const styles = theme => ({
         boxShadow: '0px 0px 6px 0px rgba(82,82,82,1)',
         maxWidth: '45%',
         cursor: 'pointer',
+        '& :focus':{
+            outline: 'none'
+        },
         '@media (max-width: 480px)':{ maxWidth: '100%'}
     },
     title: { 
@@ -28,7 +31,7 @@ const styles = theme => ({
     },
     textContainer:{ padding: '10px'}
 })
-class Services extends Component {
+class Jobs extends Component {
     state = {
         serviecDetails: {},
         isModalOpen: false,
@@ -58,6 +61,7 @@ class Services extends Component {
     handleClose = () => {
         this.setState({isModalOpen: false})
     }
+
     render() {
         const { serviecDetails, isModalOpen } = this.state
         const { classes } = this.props
@@ -75,24 +79,24 @@ class Services extends Component {
                             <Grid container>
                                 {serviecDetails.jobs.map((job, index) => 
                                 { return <div key={index} className={classes.job} onClick={() => this.handleModalOpen(job)}>
-                                        <Grid container>
-                                            <Grid item xs={12} className={classes.imageContainer}>
-                                                <img src={job.image} className={classes.jobImage} alt="Job pic"/>
-                                            </Grid>
-                                            <Grid item xs={12} className={classes.textContainer}>
                                                 <Grid container>
-                                                    <Grid item xs={12} md={12} color="primary" className={classes.title}>{job.title}</Grid>
-                                                    <Grid item xs={12} md={12} className={classes.description}>{job.description}</Grid>
-                                                </Grid>
-                                            </Grid>  
-                                        </Grid>                                 
-                                </div>})
+                                                    <Grid item xs={12} className={classes.imageContainer}>
+                                                        <img src={job.image} className={classes.jobImage} alt="Job pic"/>
+                                                    </Grid>
+                                                    <Grid item xs={12} className={classes.textContainer}>
+                                                        <Grid container>
+                                                            <Grid item xs={12} md={12} color="primary" className={classes.title}>{job.title}</Grid>
+                                                            <Grid item xs={12} md={12} className={classes.description}>{job.description}</Grid>
+                                                        </Grid>
+                                                    </Grid>  
+                                                </Grid>                                 
+                                            </div>})
                             }
                             </Grid>
                         </Grid>
                     </Grid>
                 }
-                {isModalOpen && <Service info={this.state} closeModal={this.handleClose} />}
+                {isModalOpen && <Job info={this.state} closeModal={this.handleClose} />}
                {/* {isModalOpen && <Modal
                     open={isModalOpen}
                     onClose={this.handleClose}
@@ -107,4 +111,4 @@ class Services extends Component {
     }
 }
 
-export default withStyles(styles)(Services)
+export default withStyles(styles)(Jobs)

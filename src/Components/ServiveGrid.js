@@ -74,7 +74,7 @@ class ServiceGrid extends Component {
                         <CircularProgress />
                     </div>}
                     {serviceList.data.map(service => <Grid key={service.id} item xs={4} md={2}>
-                            <Link to={`/services/${service.id}`} className={classes.serviceLink}>
+                            <Link to={`/jobs/${service.id}`} className={classes.serviceLink}>
                                 <img src={service.avatar} className={classes.serviceLogo} alt="logo"/>
                                 <label className={classes.serviceName}>{service.name}</label>
                             </Link>
