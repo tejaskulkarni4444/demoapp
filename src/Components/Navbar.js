@@ -15,6 +15,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import classNames from 'classnames'
+import LoginIcon from '@material-ui/icons/AccountCircle'
 
 const styles = theme => ({
     root: {
@@ -106,18 +107,19 @@ const styles = theme => ({
       border: 'White',
       outline: '0'
     },
-    sliderMenu:{ 
+    sliderMenu: { 
       marginLeft: 'auto',
       display: 'none',
       '@media (max-width:480px)':{
         display: 'inline-block'
       }
     },
-    drawerPaper:{ 
+    drawerPaper: { 
       backgroundColor: 'Black',
       width: '50%'
     },
-    drawerItems:{ color: '#fff'}
+    drawerItems: { color: '#fff'},
+    navIcon: { transform: 'translateY(5px)' }
   });
 
 class Navbar extends Component {
@@ -144,39 +146,19 @@ class Navbar extends Component {
                 className={classes.logoBtn}
                 color="inherit"
                 aria-label="open drawer"
-              >{/* TODO Add a logo */}
+              >
                 <Link to='/'>
                   <HammerIcon className={classes.logo}/>
                   <Typography className={classes.logoText}>&nbsp;Build</Typography>
                 </Link>
               </IconButton>
-              {/* <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder="What are you looking for?"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ 'aria-label': 'search' }}
-                />
-              </div> */}
               <ul className={classes.navLinkContainer} position="start">
                 <Link to='/about' className={classes.navLinks}><li>What we do?</li></Link>
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
-                <Link to='/' className={classes.navLinks}><li>Login</li></Link>
+                <Link to='/' className={classes.navLinks}>
+                  <LoginIcon className={classes.navIcon}/>
+                </Link>
               </ul>
-              {/* <IconButton 
-                edge="start" 
-                className={classNames(classes.sliderMenu, classes.sliderBtn)} 
-                onClick={this.handleDrawerOpen}
-                color="inherit" 
-                aria-label="menu"
-              >
-                <MenuIcon className={classes.sliderBtn} />
-              </IconButton> */}
               <MenuIcon 
                 edge="start" 
                 id='sliderBtn'
