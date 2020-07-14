@@ -21,8 +21,7 @@ const styles = theme => ({
         '@media (max-width: 480px)':{ maxWidth: '100%'}
     },
     title: { 
-        fontWeight: '600',
-        // color: '#000'
+        fontWeight: '600'
     },
     description:{ color: '#000'},
     jobImage:{ 
@@ -79,33 +78,24 @@ class Jobs extends Component {
                             <Grid container>
                                 {serviecDetails.jobs.map((job, index) => 
                                 { return <div key={index} className={classes.job} onClick={() => this.handleModalOpen(job)}>
-                                                <Grid container>
-                                                    <Grid item xs={12} className={classes.imageContainer}>
-                                                        <img src={job.image} className={classes.jobImage} alt="Job pic"/>
+                                            <Grid container>
+                                                <Grid item xs={12} className={classes.imageContainer}>
+                                                    <img src={job.image} className={classes.jobImage} alt="Job pic"/>
+                                                </Grid>
+                                                <Grid item xs={12} className={classes.textContainer}>
+                                                    <Grid container>
+                                                        <Grid item xs={12} md={12} color="primary" className={classes.title}>{job.title}</Grid>
+                                                        <Grid item xs={12} md={12} className={classes.description}>{job.description}</Grid>
                                                     </Grid>
-                                                    <Grid item xs={12} className={classes.textContainer}>
-                                                        <Grid container>
-                                                            <Grid item xs={12} md={12} color="primary" className={classes.title}>{job.title}</Grid>
-                                                            <Grid item xs={12} md={12} className={classes.description}>{job.description}</Grid>
-                                                        </Grid>
-                                                    </Grid>  
-                                                </Grid>                                 
-                                            </div>})
+                                                </Grid>  
+                                            </Grid>                                 
+                                        </div>})
                             }
                             </Grid>
                         </Grid>
                     </Grid>
                 }
                 {isModalOpen && <Job info={this.state} closeModal={this.handleClose} />}
-               {/* {isModalOpen && <Modal
-                    open={isModalOpen}
-                    onClose={this.handleClose}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                >
-                    <div> <Service info={this.state} /> </div>
-                   
-               </Modal>} */}
             </div>
         );
     }

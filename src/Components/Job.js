@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import Modal from '@material-ui/core/Modal'
+import Button from '@material-ui/core/Button'
+import Calculator from './Calculator'
 
 const styles = theme => ({
     paper: { 
@@ -34,11 +36,19 @@ const styles = theme => ({
         padding: '0 15px'
     },
     title:{ 
-        fontWeight: '600', 
-        fontSize: '14px',
+        fontWeight: theme.palette.title.fontWeight, 
+        fontSize: theme.palette.title.fontSize,
         margin: '0 5px 5px 0px'
     },
-    infoSection: {padding: '0 20px'}
+    infoSection: {padding: '0 20px'},
+    btn:{ 
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.light,
+        width: '100%',
+        '&:hover':{
+            backgroundColor: theme.palette.primary.dark,
+        }
+    }
 })
 
 class Job extends Component {
@@ -89,7 +99,12 @@ class Job extends Component {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>Calculator</Grid>
+                        <Grid item xs={12}>
+                            <Calculator />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button className={classes.btn}>Continue</Button>
+                        </Grid>
                     </Grid>
                 </div>
                 </Modal>)
