@@ -55,7 +55,6 @@ class Job extends Component {
     
     componentWillMount(){
         const { info } = this.props
-        console.log(info)
         this.setState({ open: info.isModalOpen})
     }
     
