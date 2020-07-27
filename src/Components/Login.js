@@ -52,7 +52,8 @@ class Login extends Component {
         isLoginDisabled: false
     }
 
-    handleInput = () => {
+    handleInput = (e) => {
+        e.preventDefault()
         const { loginValues } = this.state
         let isError = ''
         this.setState({isLoginDisabled: true, inputError: []})
@@ -72,7 +73,7 @@ class Login extends Component {
         }        
     }
 
-    handleLogin = () =>{
+    handleLogin = () => {
         const { loginValues } = this.state
             axios.post('https://buildmeapi.herokuapp.com/user/login/', {'username':loginValues.username, 'password': loginValues.password}).then(res =>{
                 if(res.data && res.data.token){
@@ -157,7 +158,7 @@ class Login extends Component {
                             color="primary" 
                             type="submit"
                             className={classes.submitBtn} 
-                            onClick={this.handleInput}
+                            onClick={(e)=>this.handleInput(e)}
                             disabled={isLoginDisabled}
                         >Login</Button>
                     </Grid>
