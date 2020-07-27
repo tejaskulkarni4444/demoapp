@@ -4,8 +4,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import BorderColorIcon from '@material-ui/icons/BorderColor'
-import ReceiptIcon from '@material-ui/icons/Receipt'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
+import PersonIcon from '@material-ui/icons/PersonPinCircle'
 
 const styles = theme => ({
   stepsContainer:{
@@ -52,8 +52,8 @@ class Steps extends Component {
                     <Grid item xs={12} sm={6} md={3} className={classes.step}>
                       <div className={classes.stepBox}>
                         <h4>Step 3</h4>
-                        <ReceiptIcon className={classes.icons}/>
-                        <Typography>Get a pricing estimate</Typography>
+                        <PersonIcon className={classes.icons}/>
+                        <Typography>Connect with professionals around you</Typography>
                       </div>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3} className={classes.step}>

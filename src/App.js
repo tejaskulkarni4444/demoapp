@@ -8,6 +8,7 @@ import Jobs from './Components/Jobs'
 import Job from './Components/Job'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import Footer from './Components/Footer'
+import Category from './Components/Category'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <About path='/about' Component={About}></About>
             <Jobs path='/jobs/:id' exact Component={Jobs}></Jobs>
             <Job path='/job/:id' exact Component={Job}></Job>
+            <Category path='/category/:id' exact Component={Category}></Category>
           </Switch>
           <Footer/>
       </div>

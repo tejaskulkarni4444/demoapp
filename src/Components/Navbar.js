@@ -13,9 +13,11 @@ import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import classNames from 'classnames'
 import LoginIcon from '@material-ui/icons/AccountCircle'
+import Modal from '@material-ui/core/Modal'
+import Login from './Login'
+import axios from 'axios'
 
 const styles = theme => ({
     root: {
@@ -25,9 +27,6 @@ const styles = theme => ({
       position: 'relative',
       top: '0',
       backgroundColor: 'Black'
-    },
-    logoBtn: {
-      
     },
     logo:{ color:'White'},
     logoText:{ 
@@ -119,14 +118,67 @@ const styles = theme => ({
       width: '50%'
     },
     drawerItems: { color: '#fff'},
-    navIcon: { transform: 'translateY(5px)' }
+    navIcon: { 
+      transform: 'translateY(7px)',
+      margin: '0 5px',
+      '@media (max-width: 480px)':{
+        transform: 'translateY(0px)',
+        verticalAlign: 'top'
+      }
+    },
+    loginModal: { 
+      width: '50%',
+      top: '35%  !important',
+      left: '25% !important',
+      '& div':{ outline: '0'},
+      '@media (max-width: 480px)': {
+        top: '20% !important',
+        left: '0 !important',
+        width: '100%'
+      }
+    },
+    loggedInDropdown: {
+      postion: 'absolute',
+      right: '50px !important',
+      top: '70px !important',
+      left: 'unset !important',
+      height: '120px',
+      border: 'solid 1px #000',
+      outline: 'unset',
+      width: '150px',
+      '& a':{
+        display: 'block',
+        color: '#000',
+        fontSize: theme.palette.title,
+        padding: '10px',
+        backgroundColor: '#fff',
+        borderBottom: 'solid 1px #000'
+      },
+      '& div':{
+        backgroundColor: 'transparent !important'
+      }
+    },
   });
 
 class Navbar extends Component {
   state = {
     isHomePage: false,
     drawerOpen: false,
-    isDrawerClicked: false
+    isDrawerClicked: false,
+    loginModalOpen: false,
+    loggedInMenu: false,
+    loggedInMenuOpen: false,
+    isLoggedIn: false,
+    fullname: ''
+  }
+  componentDidMount(){
+    const isLoggedIn = localStorage.getItem("buildFixToken") ? true : false
+    if(isLoggedIn) {
+      this.setState({ isLoggedIn: true})
+      const loginInfo = JSON.parse(localStorage.getItem("buildFixToken"))
+      this.setState({fullname: loginInfo.fullname})
+      console.log(loginInfo)
+    }
   }
   handleDrawerOpen = () => {
     this.setState({drawerOpen: true, isDrawerClicked: true})
@@ -136,9 +188,51 @@ class Navbar extends Component {
     this.setState({drawerOpen: false, isDrawerClicked: false})
   }
 
+  handleModalClose = () => {
+    this.setState({ loginModalOpen: false})
+  }
+
+  handleloggedInModal = () => {
+    this.setState({ loggedInModal: !this.state.loggedInModal})
+  }
+
+  handleLoginActions = (info = {}) => {
+    console.log(info)
+    if(info.loginInfo.isLoggedIn === true) {
+      this.setState(state => {
+        state.loginModalOpen = false
+        state.isLoggedIn = true
+        state.fullname = info.loginInfo.fullname
+        return state
+      })
+    } 
+    else if(info.loginInfo.isLoggedIn === false){
+      this.setState({isLoggedIn: false})
+    }
+  }
+  handleLoggedInMenuClose = () =>{
+    this.setState({ loggedInMenuOpen: false })
+  }
+  handleLogout = () => {
+    const token = JSON.parse(localStorage.getItem('buildFixToken')).token.access
+    axios.post('https://buildmeapi.herokuapp.com/user/logout/',{},{ 
+      headers:{
+      'Authorization': `Bearer ${token}`
+      }
+    }).then(res =>{
+      console.log(res)
+    })
+    localStorage.removeItem('buildFixToken')
+    this.setState({isLoggedIn: false, loggedInMenuOpen: false})
+  }
+  closeDrawer = () =>{
+    this.setState({drawerOpen: false})
+  }
+
   render() {
     const { classes } = this.props
-    const { drawerOpen } = this.state  
+    const { drawerOpen, loginModalOpen, isLoggedIn, loggedInMenuOpen } = this.state
+    const loggedIn = isLoggedIn && localStorage.getItem("buildFixToken")
     return (<AppBar className={classes.navContainer}>
               <Toolbar>
               <IconButton
@@ -155,9 +249,13 @@ class Navbar extends Component {
               <ul className={classes.navLinkContainer} position="start">
                 <Link to='/about' className={classes.navLinks}><li>What we do?</li></Link>
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
-                <Link to='/' className={classes.navLinks}>
+                {!isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loginModalOpen: true })}>
                   <LoginIcon className={classes.navIcon}/>
-                </Link>
+                </span>}
+                {isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loggedInMenuOpen: true })}>
+                  <LoginIcon className={classes.navIcon} color="primary"/>
+                  <span >{this.state.fullname}</span>
+                </span>}
               </ul>
               <MenuIcon 
                 edge="start" 
@@ -172,6 +270,7 @@ class Navbar extends Component {
                   variant="persistent"
                   anchor="right"
                   open={drawerOpen}
+                  onClose={this.closeDrawer}
                   // onRequestChange={this.handleDrawerClose}
                   ModalProps={{ onBackdropClick: this.handleDrawerClose }}
                   className={classes.drawerContainer}
@@ -186,15 +285,43 @@ class Navbar extends Component {
                   </div>
                   <Divider />
                   <List>
-                    {['Login/Sign up','What we do?','Services'].map((text, index) => (
-                      <Link to={`/${text}`} key={index}>
-                        <ListItem button key={text} className={classes.drawerItems}>
-                          <ListItemText primary={text} />
-                        </ListItem>
-                      </Link>
-                    ))}
+                    {!loggedIn && <ListItem button className={classes.drawerItems}>
+                      <LoginIcon className={classes.navIcon}/>
+                      <Link to='/' className={classes.drawerItems} onClick={() => this.setState({ loginModalOpen: true })}>Login</Link>
+                      </ListItem>
+                    }
+                    {loggedIn && <ListItem button className={classes.drawerItems}>
+                      <Link to='/' className={classes.drawerItems}><LoginIcon className={classes.navIcon} color="primary"/>{this.state.fullname}</Link>
+                      </ListItem>
+                    }
+                    <ListItem button className={classes.drawerItems}><Link to='/about' className={classes.drawerItems}><li>What we do?</li></Link></ListItem>
+                    <ListItem button className={classes.drawerItems}><Link to='/services' className={classes.drawerItems}><li>Services</li></Link></ListItem>
+                    { loggedIn && <ListItem button className={classes.drawerItems} onClick={this.handleLogout}><Link to='/' className={classes.drawerItems}><li>Logout</li></Link></ListItem>}
                   </List>
                 </Drawer>
+                {!loggedIn && <Modal
+                  open = {loginModalOpen}
+                  onClose = {this.handleModalClose}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  className = {classes.loginModal}
+                >
+                  <div>
+                    <Login handleLogin={this.handleLoginActions}/>
+                  </div>
+                </Modal>}
+                {loggedIn && <Modal
+                  id="simple-menu"
+                  open={loggedInMenuOpen}
+                  onClose={this.handleLoggedInMenuClose}
+                  className={classes.loggedInDropdown}
+                >
+                  <div>
+                    <Link to="/">Profile</Link>
+                    <Link to="/">My account</Link>
+                    <Link  to="/" onClick={this.handleLogout}>Logout</Link>
+                  </div>
+                </Modal>}
             </AppBar>
     );
   }

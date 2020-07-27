@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Grid } from '@material-ui/core'
 import Job from './Job'
+import Categories from './Categories'
 
 const styles = theme => ({
     pageTitle:{ margin:'10px 0'},
@@ -72,6 +73,7 @@ class Jobs extends Component {
                         <Grid item xs={12} sm={3}>
                             <img src={serviecDetails.jobImage} alt='zz'/>
                             <p>{serviecDetails.description}</p>
+                            <Categories/>
                         </Grid>
                         <Grid item xs={12} sm={9}>
                             <h1 className={classes.pageTitle}>{serviecDetails.name}</h1>

@@ -4,7 +4,6 @@ import { Grid } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import Modal from '@material-ui/core/Modal'
 import Button from '@material-ui/core/Button'
-import Calculator from './Calculator'
 
 const styles = theme => ({
     paper: { 
@@ -89,17 +88,11 @@ class Job extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container>
-                                <Grid item xs={12} sm={6}><img src={jobInfo.image} className={classes.jobImage} alt="zz"/></Grid>
-                                <Grid item xs={12} sm={6} className={classes.infoSection}>
-                                    <h4 className={classes.title}>Required material</h4>
-                                    <ul className={classes.materialList}>
-                                        {jobInfo && jobInfo.material.map((material, index) => <li key={index}>{material}</li>)}
-                                    </ul>
+                                <Grid item xs={12} sm={12}><img src={jobInfo.image} className={classes.jobImage} alt="zz"/></Grid>
+                                <Grid item xs={12} className={classes.infoSection}>
+                                    Description
                                 </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Calculator />
                         </Grid>
                         <Grid item xs={12}>
                             <Button className={classes.btn}>Continue</Button>
