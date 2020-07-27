@@ -88,7 +88,7 @@ class Login extends Component {
                         localStorage.setItem("buildFixToken", JSON.stringify(res.data));
                     })
                 } else { 
-                    console.log(res)
+                    // console.log(res)
                     this.setState(state => {
                         state.loginInfo.loginError = true
                         return state
@@ -97,7 +97,7 @@ class Login extends Component {
                 }
             })
             .catch(error => {
-                console.log(error)
+                // console.log(error)
                 this.setState(state => {
                     state.loginInfo.loginError = true
                     state.isLoginDisabled = false

@@ -177,7 +177,7 @@ class Navbar extends Component {
       this.setState({ isLoggedIn: true})
       const loginInfo = JSON.parse(localStorage.getItem("buildFixToken"))
       this.setState({fullname: loginInfo.fullname})
-      console.log(loginInfo)
+      // console.log(loginInfo)
     }
   }
   handleDrawerOpen = () => {
@@ -197,7 +197,6 @@ class Navbar extends Component {
   }
 
   handleLoginActions = (info = {}) => {
-    console.log(info)
     if(info.loginInfo.isLoggedIn === true) {
       this.setState(state => {
         state.loginModalOpen = false
@@ -220,10 +219,10 @@ class Navbar extends Component {
       'Authorization': `Bearer ${token}`
       }
     }).then(res =>{
-      console.log(res)
+      localStorage.removeItem('buildFixToken')
+      this.setState({isLoggedIn: false, loggedInMenuOpen: false})
     })
-    localStorage.removeItem('buildFixToken')
-    this.setState({isLoggedIn: false, loggedInMenuOpen: false})
+   
   }
   closeDrawer = () =>{
     this.setState({drawerOpen: false})
