@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
-import { fade } from '@material-ui/core/styles'
-import { withStyles } from '@material-ui/core/styles'
+import { fade, withStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import HammerIcon from '@material-ui/icons/Gavel'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -13,8 +12,12 @@ import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import classNames from 'classnames'
+import LoginIcon from '@material-ui/icons/AccountCircle'
+import Modal from '@material-ui/core/Modal'
+import Login from './Public/Login'
+import axios from 'axios'
+import Registration from './Public/Register'
 
 const styles = theme => ({
     root: {
@@ -24,9 +27,6 @@ const styles = theme => ({
       position: 'relative',
       top: '0',
       backgroundColor: 'Black'
-    },
-    logoBtn: {
-      
     },
     logo:{ color:'White'},
     logoText:{ 
@@ -106,45 +106,174 @@ const styles = theme => ({
       border: 'White',
       outline: '0'
     },
-    sliderMenu:{ 
+    sliderMenu: { 
       marginLeft: 'auto',
       display: 'none',
       '@media (max-width:480px)':{
         display: 'inline-block'
       }
     },
-    drawerPaper:{ 
+    drawerPaper: { 
       backgroundColor: 'Black',
       width: '50%'
     },
-    drawerItems:{ color: '#fff'}
+    drawerItems: { color: '#fff'},
+    navIcon: { 
+      transform: 'translateY(7px)',
+      margin: '0 5px',
+      '@media (max-width: 480px)':{
+        transform: 'translateY(0px)',
+        verticalAlign: 'top'
+      }
+    },
+    loginModal: { 
+      width: '50%',
+      top: '8%  !important',
+      left: '25% !important',
+      overflowY: 'scroll',
+      '& div':{ outline: '0'},
+      '@media (max-width: 480px)': {
+        top: '20% !important',
+        left: '0 !important',
+        width: '100%'
+      }
+    },
+    loggedInDropdown: {
+      postion: 'absolute',
+      right: '50px !important',
+      top: '70px !important',
+      left: 'unset !important',
+      height: '78px',
+      border: 'solid 1px #000',
+      outline: 'unset',
+      width: '150px',
+      '& a':{
+        display: 'block',
+        color: '#000',
+        fontSize: theme.palette.title,
+        padding: '10px',
+        backgroundColor: '#fff',
+        borderBottom: 'solid 1px #000'
+      },
+      '& div':{
+        backgroundColor: 'transparent !important'
+      },
+      closeBtn:{
+        display: 'block',
+        textAlign: 'right',
+        color: '#000'
+      },
+      progressIcon:{
+        display: 'block',
+        position: 'absolute !important',
+        left: '40%',
+        top: '35%',
+        background: 'transparent'
+      }
+    },
   });
 
 class Navbar extends Component {
   state = {
     isHomePage: false,
     drawerOpen: false,
-    isDrawerClicked: false
+    isDrawerClicked: false,
+    loginModalOpen: false,
+    registerModalOpen: false,
+    loggedInMenu: false,
+    loggedInMenuOpen: false,
+    isLoggedIn: false,
+    fullname: '',
+    inProgress: false
+  }
+  componentDidMount(){
+    const isLoggedIn = localStorage.getItem("buildFixToken") ? true : false
+    if(isLoggedIn) {  //Check if user was lgged in previously
+      this.setState({isLoggedIn: true}) //add redux state
+      const loginInfo = JSON.parse(localStorage.getItem("buildFixToken"))
+      this.setState({fullname: loginInfo.fullname})
+    }
   }
   handleDrawerOpen = () => {
     this.setState({drawerOpen: true, isDrawerClicked: true})
   }
 
   handleDrawerClose = () => {
-    console.log('ha')
     this.setState({drawerOpen: false, isDrawerClicked: false})
   }
-  handleClickAway = (event) => {
-    // const { drawerOpen, isDrawerClicked } = this.state
-    // console.log(isDrawerClicked)
-    // if(drawerOpen && isDrawerClicked){ 
-    //   this.setState({drawerOpen: false, isDrawerClicked: false})
-    // }
+
+  handleModalClose = (type) => {
+    if(type) { 
+      if(type === 'login'){
+      this.setState({ loginModalOpen: false}) }
+      else{ this.setState({ registerModalOpen: false})}
+    } 
+  }
+
+  handleloggedInModal = () => {
+    this.setState({ loggedInModal: !this.state.loggedInModal})
+  }
+
+  handleLoginActions = (info = {}) => { //Handle login events
+    if(info.loginInfo.isLoggedIn === true) {
+      this.setState(state => {
+        state.loginModalOpen = false
+        state.isLoggedIn = true
+        state.fullname = info.loginInfo.fullname
+        return state
+      },()=> window.location.reload())
+    } 
+    else if(info.loginInfo.isLoggedIn === false){
+      this.setState({isLoggedIn: false})
+    }
+    if(info.isRegister){
+      this.setState({loginModalOpen: false,registerModalOpen: true})
+    }
+  }
+
+  handleRegisterActions = (info) => {     //handle registration events
+    const token = localStorage.getItem("buildFixToken")
+    if(info.loginInfo.isLoggedIn === true && token) {
+      this.setState(state => {
+        state.registerModalOpen = false
+        state.isLoggedIn = true
+        state.fullname = info.loginInfo.fullname
+        return state
+      },()=> window.location.reload())
+    } 
+    else if(info.loginInfo.isLoggedIn === false){
+      this.setState({isLoggedIn: false})
+    }
+  }
+
+  handleLoggedInMenuClose = () => {
+    this.setState({ loggedInMenuOpen: false })
+  }
+
+  handleLogout = () => {  //Handle logout events
+    this.setState({inProgress: true})
+    const token = JSON.parse(localStorage.getItem('buildFixToken')).token.access
+    axios.post('https://buildmeapi.herokuapp.com/user/logout/',{},{ 
+      headers:{
+      'Authorization': `Bearer ${token}`
+      }
+    }).then(res =>{
+      localStorage.removeItem('buildFixToken')
+      this.setState({
+        isLoggedIn: false, 
+        loggedInMenuOpen: false
+      },()=> window.location.reload())
+    })
+   
+  }
+  closeDrawer = () => {
+    this.setState({drawerOpen: false})
   }
 
   render() {
     const { classes } = this.props
-    const { drawerOpen } = this.state  
+    const { drawerOpen, loginModalOpen, isLoggedIn, loggedInMenuOpen, registerModalOpen } = this.state
+    const loggedIn = localStorage.getItem("buildFixToken")
     return (<AppBar className={classes.navContainer}>
               <Toolbar>
               <IconButton
@@ -152,39 +281,24 @@ class Navbar extends Component {
                 className={classes.logoBtn}
                 color="inherit"
                 aria-label="open drawer"
-              >{/* TODO Add a logo */}
+              >
                 <Link to='/'>
                   <HammerIcon className={classes.logo}/>
                   <Typography className={classes.logoText}>&nbsp;Build</Typography>
                 </Link>
               </IconButton>
-              {/* <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder="What are you looking for?"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ 'aria-label': 'search' }}
-                />
-              </div> */}
               <ul className={classes.navLinkContainer} position="start">
                 <Link to='/about' className={classes.navLinks}><li>What we do?</li></Link>
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
-                <Link to='/' className={classes.navLinks}><li>Login</li></Link>
+                {!isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loginModalOpen: true })}>
+                  <LoginIcon className={classes.navIcon}/>
+                  <span>Login</span>
+                </span>}
+                {isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loggedInMenuOpen: true })}>
+                  <LoginIcon className={classes.navIcon} color="primary"/>
+                  <span >{this.state.fullname}</span>
+                </span>}
               </ul>
-              {/* <IconButton 
-                edge="start" 
-                className={classNames(classes.sliderMenu, classes.sliderBtn)} 
-                onClick={this.handleDrawerOpen}
-                color="inherit" 
-                aria-label="menu"
-              >
-                <MenuIcon className={classes.sliderBtn} />
-              </IconButton> */}
               <MenuIcon 
                 edge="start" 
                 id='sliderBtn'
@@ -198,6 +312,7 @@ class Navbar extends Component {
                   variant="persistent"
                   anchor="right"
                   open={drawerOpen}
+                  onClose={this.closeDrawer}
                   // onRequestChange={this.handleDrawerClose}
                   ModalProps={{ onBackdropClick: this.handleDrawerClose }}
                   className={classes.drawerContainer}
@@ -212,15 +327,56 @@ class Navbar extends Component {
                   </div>
                   <Divider />
                   <List>
-                    {['Login/Sign up','What we do?','Services'].map((text, index) => (
-                      <Link to={`/${text}`} key={index}>
-                        <ListItem button key={text} className={classes.drawerItems}>
-                          <ListItemText primary={text} />
-                        </ListItem>
-                      </Link>
-                    ))}
+                    {!loggedIn && <ListItem button className={classes.drawerItems}>
+                      <LoginIcon className={classes.navIcon}/>
+                      <Link to='/' className={classes.drawerItems} onClick={() => this.setState({ loginModalOpen: true })}>Login</Link>
+                      </ListItem>
+                    }
+                    {loggedIn && <ListItem button className={classes.drawerItems}>
+                      <Link to='/' className={classes.drawerItems}><LoginIcon className={classes.navIcon} color="primary"/>{this.state.fullname}</Link>
+                      </ListItem>
+                    }
+                    <ListItem button className={classes.drawerItems}><Link to='/about' className={classes.drawerItems}><li>What we do?</li></Link></ListItem>
+                    <ListItem button className={classes.drawerItems}><Link to='/services' className={classes.drawerItems}><li>Services</li></Link></ListItem>
+                    { loggedIn && <ListItem button className={classes.drawerItems}><Link to='/myaccount' className={classes.drawerItems}><li>My account</li></Link></ListItem>}
+                    { loggedIn && <ListItem button className={classes.drawerItems} onClick={this.handleLogout}><Link to='/' className={classes.drawerItems}><li>Logout</li></Link></ListItem>}
                   </List>
                 </Drawer>
+                {!loggedIn && <Modal
+                  open = {loginModalOpen}
+                  onClose = {()=> this.setState({loginModalOpen: false})}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  className = {classes.loginModal}
+                >
+                  <div>
+                    <span className={classes.closeBtn}>x</span>
+                    <Login handleLogin={this.handleLoginActions}/>
+                  </div>
+                </Modal>}
+                {!loggedIn && registerModalOpen && <Modal
+                  open = {registerModalOpen}
+                  onClose = {()=> this.setState({registerModalOpen: false})}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  className = {classes.loginModal}
+                >
+                  <div>
+                    <span className={classes.closeBtn}>x</span>
+                    <Registration handleRegister={this.handleRegisterActions}/>
+                  </div>
+                </Modal>}
+                {loggedIn && <Modal
+                  id="simple-menu"
+                  open={loggedInMenuOpen}
+                  onClose={this.handleLoggedInMenuClose}
+                  className={classes.loggedInDropdown}
+                >
+                  <div>
+                    <Link to="/myaccount">My account</Link>
+                    <Link  to="/" onClick={this.handleLogout}>Logout</Link>
+                  </div>
+                </Modal>}
             </AppBar>
     );
   }
