@@ -89,7 +89,6 @@ class Login extends Component {
     handleRegisterModal = () => {
         this.setState({isRegister: true},()=>{
             this.props.handleLogin(this.state)
-            console.log('kk')
         })   
     }
 

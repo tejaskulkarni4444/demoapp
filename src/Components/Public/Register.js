@@ -58,7 +58,8 @@ class Register extends Component {
         },
         errorMsgs: {
             emptyInput: 'cannot be empty',
-            invalidInput: 'invalid'
+            invalidInput: 'invalid',
+            registerError: ''
         },
         isSubmitted: false,
         isProcessing: false,
@@ -77,7 +78,7 @@ class Register extends Component {
         this.setState(state => {
             state.formInformation[inputName] = inputVal
             return state
-        },()=> console.log(this.state.formInformation))
+        })
     }
 
     handleSubmit = () => {
@@ -96,6 +97,7 @@ class Register extends Component {
     handleRegister = () => {
         const { firstname, lastname, username, email, phone, password,image } = this.state.formInformation
         const registerUrl = 'https://buildmeapi.herokuapp.com/user/signup/'
+        console.log('called')
         axios.post(registerUrl,{
             'fullname': `${firstname} ${lastname}`,
             username,
@@ -105,6 +107,8 @@ class Register extends Component {
             image
         })
         .then(res => {
+            console.log(res)
+            if(res.data.token){
             this.setState(state => { 
                 state.loginInfo.isLoggedIn = true 
                 state.loginInfo.loginError = false
@@ -119,8 +123,11 @@ class Register extends Component {
                     'email': res.data.email
                 })
                 localStorage.setItem("buildFixToken", JSON.stringify(res.data))
+                window.location.reload()
             })
-            localStorage.setItem("buildFixToken", JSON.stringify(res.data))
+            } else { 
+                this.setState({registerError: 'Something went wrong'})
+            }
         })
         .catch(error => {
             this.setState({backendError: true, backendErrorMsg: error, isProcessing: false})
@@ -130,7 +137,7 @@ class Register extends Component {
 
     render() {
         const { classes } = this.props
-        const { formInformation, isSubmitted, isProcessing, backendError, backendErrorMsg } = this.state
+        const { formInformation, isSubmitted, isProcessing, backendError, backendErrorMsg, registerError } = this.state
         return (<Grid container className={classes.container}>
             <Grid item xs={12}><h2>Enter your details</h2></Grid>
             <Grid container className={classNames(classes.splitRow, classes.inputRow)}>
@@ -226,12 +233,12 @@ class Register extends Component {
                     color="primary" 
                     type="submit"
                     className={classes.submitBtn} 
-                    onClick={(e)=>this.handleSubmit(e)}
+                    onClick={() => this.handleSubmit()}
                     disabled={isProcessing}
                 >Submit and Continue</Button>
             </Grid>
-            {backendError && <Grid item xs={12} className={classes.inputRow}>
-                <span>{backendErrorMsg ? backendError : 'Registration failed'}</span>
+            {(backendError || registerError) && <Grid item xs={12} className={classes.inputRow}>
+                <span>{backendErrorMsg ? backendError : registerError}</span>
             </Grid>}
         </Grid>)
     }
