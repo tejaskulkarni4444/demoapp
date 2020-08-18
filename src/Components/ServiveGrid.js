@@ -28,8 +28,7 @@ const styles = theme => ({
 })
 class ServiceGrid extends Component {
     componentDidMount(){
-        this.getData()
-        // this.setData()
+        this.getData()  //Get service data on Mount
     }
     state = {
         serviceList: {
@@ -44,7 +43,7 @@ class ServiceGrid extends Component {
         }
     }
 
-    getData = () => {
+    getData = () => {       //Get the services
         axios.get(`https://5ecd617f7c528e00167cd462.mockapi.io/services`)
         .then(res => {
         if(res){
@@ -55,17 +54,7 @@ class ServiceGrid extends Component {
         }
       })
     }
-    // setData = () => {
-    //     axios.post(`https://5ecd617f7c528e00167cd462.mockapi.io/demo`,this.state.something)
-    //     .then(res => {
-    //       if(res){
-    //           this.setState(state => { 
-    //               state.serviceList.data = res.data
-    //               return state
-    //           },()=> console.log(this.state.serviceList))
-    //       }
-    //     })
-    // }
+
     render() {
         const { serviceList } = this.state
         const { classes } = this.props

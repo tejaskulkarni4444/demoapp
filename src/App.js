@@ -9,6 +9,7 @@ import Job from './Components/Job'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import Footer from './Components/Footer'
 import Category from './Components/Category'
+import MyAccount from './Components/Private/Account'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Jobs path='/jobs/:id' exact Component={Jobs}></Jobs>
             <Job path='/job/:id' exact Component={Job}></Job>
             <Category path='/category/:id' exact Component={Category}></Category>
+            <MyAccount path='/myaccount' exact Component={MyAccount}></MyAccount>
           </Switch>
           <Footer/>
       </div>

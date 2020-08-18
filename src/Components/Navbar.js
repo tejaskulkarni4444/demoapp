@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
-import { fade } from '@material-ui/core/styles'
-import { withStyles } from '@material-ui/core/styles'
+import { fade, withStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import HammerIcon from '@material-ui/icons/Gavel'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -16,8 +15,9 @@ import ListItem from '@material-ui/core/ListItem'
 import classNames from 'classnames'
 import LoginIcon from '@material-ui/icons/AccountCircle'
 import Modal from '@material-ui/core/Modal'
-import Login from './Login'
+import Login from './Public/Login'
 import axios from 'axios'
+import Registration from './Public/Register'
 
 const styles = theme => ({
     root: {
@@ -128,8 +128,9 @@ const styles = theme => ({
     },
     loginModal: { 
       width: '50%',
-      top: '35%  !important',
+      top: '8%  !important',
       left: '25% !important',
+      overflowY: 'scroll',
       '& div':{ outline: '0'},
       '@media (max-width: 480px)': {
         top: '20% !important',
@@ -142,7 +143,7 @@ const styles = theme => ({
       right: '50px !important',
       top: '70px !important',
       left: 'unset !important',
-      height: '120px',
+      height: '78px',
       border: 'solid 1px #000',
       outline: 'unset',
       width: '150px',
@@ -156,6 +157,18 @@ const styles = theme => ({
       },
       '& div':{
         backgroundColor: 'transparent !important'
+      },
+      closeBtn:{
+        display: 'block',
+        textAlign: 'right',
+        color: '#000'
+      },
+      progressIcon:{
+        display: 'block',
+        position: 'absolute !important',
+        left: '40%',
+        top: '35%',
+        background: 'transparent'
       }
     },
   });
@@ -166,18 +179,19 @@ class Navbar extends Component {
     drawerOpen: false,
     isDrawerClicked: false,
     loginModalOpen: false,
+    registerModalOpen: false,
     loggedInMenu: false,
     loggedInMenuOpen: false,
     isLoggedIn: false,
-    fullname: ''
+    fullname: '',
+    inProgress: false
   }
   componentDidMount(){
     const isLoggedIn = localStorage.getItem("buildFixToken") ? true : false
-    if(isLoggedIn) {
-      this.setState({ isLoggedIn: true})
+    if(isLoggedIn) {  //Check if user was lgged in previously
+      this.setState({isLoggedIn: true}) //add redux state
       const loginInfo = JSON.parse(localStorage.getItem("buildFixToken"))
       this.setState({fullname: loginInfo.fullname})
-      // console.log(loginInfo)
     }
   }
   handleDrawerOpen = () => {
@@ -188,31 +202,56 @@ class Navbar extends Component {
     this.setState({drawerOpen: false, isDrawerClicked: false})
   }
 
-  handleModalClose = () => {
-    this.setState({ loginModalOpen: false})
+  handleModalClose = (type) => {
+    if(type) { 
+      if(type === 'login'){
+      this.setState({ loginModalOpen: false}) }
+      else{ this.setState({ registerModalOpen: false})}
+    } 
   }
 
   handleloggedInModal = () => {
     this.setState({ loggedInModal: !this.state.loggedInModal})
   }
 
-  handleLoginActions = (info = {}) => {
+  handleLoginActions = (info = {}) => { //Handle login events
     if(info.loginInfo.isLoggedIn === true) {
       this.setState(state => {
         state.loginModalOpen = false
         state.isLoggedIn = true
         state.fullname = info.loginInfo.fullname
         return state
-      })
+      },()=> window.location.reload())
+    } 
+    else if(info.loginInfo.isLoggedIn === false){
+      this.setState({isLoggedIn: false})
+    }
+    if(info.isRegister){
+      this.setState({loginModalOpen: false,registerModalOpen: true})
+    }
+  }
+
+  handleRegisterActions = (info) => {     //handle registration events
+    const token = localStorage.getItem("buildFixToken")
+    if(info.loginInfo.isLoggedIn === true && token) {
+      this.setState(state => {
+        state.registerModalOpen = false
+        state.isLoggedIn = true
+        state.fullname = info.loginInfo.fullname
+        return state
+      },()=> window.location.reload())
     } 
     else if(info.loginInfo.isLoggedIn === false){
       this.setState({isLoggedIn: false})
     }
   }
-  handleLoggedInMenuClose = () =>{
+
+  handleLoggedInMenuClose = () => {
     this.setState({ loggedInMenuOpen: false })
   }
-  handleLogout = () => {
+
+  handleLogout = () => {  //Handle logout events
+    this.setState({inProgress: true})
     const token = JSON.parse(localStorage.getItem('buildFixToken')).token.access
     axios.post('https://buildmeapi.herokuapp.com/user/logout/',{},{ 
       headers:{
@@ -220,18 +259,21 @@ class Navbar extends Component {
       }
     }).then(res =>{
       localStorage.removeItem('buildFixToken')
-      this.setState({isLoggedIn: false, loggedInMenuOpen: false})
+      this.setState({
+        isLoggedIn: false, 
+        loggedInMenuOpen: false
+      },()=> window.location.reload())
     })
    
   }
-  closeDrawer = () =>{
+  closeDrawer = () => {
     this.setState({drawerOpen: false})
   }
 
   render() {
     const { classes } = this.props
-    const { drawerOpen, loginModalOpen, isLoggedIn, loggedInMenuOpen } = this.state
-    const loggedIn = isLoggedIn && localStorage.getItem("buildFixToken")
+    const { drawerOpen, loginModalOpen, isLoggedIn, loggedInMenuOpen, registerModalOpen } = this.state
+    const loggedIn = localStorage.getItem("buildFixToken")
     return (<AppBar className={classes.navContainer}>
               <Toolbar>
               <IconButton
@@ -250,6 +292,7 @@ class Navbar extends Component {
                 <Link to='/services' className={classes.navLinks}><li>Services</li></Link>
                 {!isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loginModalOpen: true })}>
                   <LoginIcon className={classes.navIcon}/>
+                  <span>Login</span>
                 </span>}
                 {isLoggedIn && <span className={classes.navLinks} onClick={() => this.setState({ loggedInMenuOpen: true })}>
                   <LoginIcon className={classes.navIcon} color="primary"/>
@@ -295,18 +338,32 @@ class Navbar extends Component {
                     }
                     <ListItem button className={classes.drawerItems}><Link to='/about' className={classes.drawerItems}><li>What we do?</li></Link></ListItem>
                     <ListItem button className={classes.drawerItems}><Link to='/services' className={classes.drawerItems}><li>Services</li></Link></ListItem>
+                    { loggedIn && <ListItem button className={classes.drawerItems}><Link to='/myaccount' className={classes.drawerItems}><li>My account</li></Link></ListItem>}
                     { loggedIn && <ListItem button className={classes.drawerItems} onClick={this.handleLogout}><Link to='/' className={classes.drawerItems}><li>Logout</li></Link></ListItem>}
                   </List>
                 </Drawer>
                 {!loggedIn && <Modal
                   open = {loginModalOpen}
-                  onClose = {this.handleModalClose}
+                  onClose = {()=> this.setState({loginModalOpen: false})}
                   aria-labelledby="simple-modal-title"
                   aria-describedby="simple-modal-description"
                   className = {classes.loginModal}
                 >
                   <div>
+                    <span className={classes.closeBtn}>x</span>
                     <Login handleLogin={this.handleLoginActions}/>
+                  </div>
+                </Modal>}
+                {!loggedIn && registerModalOpen && <Modal
+                  open = {registerModalOpen}
+                  onClose = {()=> this.setState({registerModalOpen: false})}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  className = {classes.loginModal}
+                >
+                  <div>
+                    <span className={classes.closeBtn}>x</span>
+                    <Registration handleRegister={this.handleRegisterActions}/>
                   </div>
                 </Modal>}
                 {loggedIn && <Modal
@@ -316,8 +373,7 @@ class Navbar extends Component {
                   className={classes.loggedInDropdown}
                 >
                   <div>
-                    <Link to="/">Profile</Link>
-                    <Link to="/">My account</Link>
+                    <Link to="/myaccount">My account</Link>
                     <Link  to="/" onClick={this.handleLogout}>Logout</Link>
                   </div>
                 </Modal>}
