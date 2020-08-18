@@ -6,8 +6,8 @@ import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import classNames from 'classnames'
-// import {connect} from 'react-redux'
-// import {userAction} from '../../Redux/Actions/serviceActions'
+import {connect} from 'react-redux'
+import {userAction} from '../../Redux/Actions/serviceActions'
 
 const styles = theme => ({
     container: {
@@ -40,9 +40,9 @@ const styles = theme => ({
     }
 })
 
-// const mapDispatchToProps = dispatch => ({
-//     userAction: (value) => dispatch(userAction(value))
-// })
+const mapDispatchToProps = dispatch => ({
+    userAction: (value) => dispatch(userAction(value))
+})
 
 class Register extends Component { 
     state = {
@@ -237,4 +237,4 @@ class Register extends Component {
     }
 }
 
-export default  withStyles(styles)(Register)
+export default connect(null, mapDispatchToProps)(withStyles(styles)(Register))
